@@ -24,7 +24,7 @@ pgsqlpatchupdater/
 └── .env
 ```
 
-**Репозиторий:** `http://10.17.0.86:8100/ansible/pgsqlpatchupdater.git`
+**Репозиторий:** `https://github.com/username/pgsqlpatchupdater.git`
 
 ## Предварительные требования
 
@@ -38,7 +38,7 @@ pgsqlpatchupdater/
 ### Локальный запуск
 ### 1. Клонирование проекта
 ```bash
-git clone http://10.17.0.86:8100/ansible/pgsqlpatchupdater.git
+git clone https://github.com/username/pgsqlpatchupdater.git
 cd pgsqlpatchupdater
 ```
 ### 2. Настройка .env
@@ -54,15 +54,15 @@ VERSION режимы:
 | `190,192,198` | Несколько патчей последовательно |
 
 SEED режимы:
-`true` - дополнительно применится seed__adm_system_service_info.sql
+`true` - дополнительно применится seed__system_service_info.sql
 
 ### 3. Запустите docker-compose.yml
 ```bash
 docker compose up --build
 ```
 
-### Запуск через TeamCity
-1. Джоба: `SETUP Build Container` по ссылке `http://10.15.0.135:8000/viewType.html?buildTypeId=Deploy_SetupBuildContainer`
+### Запуск через CI/CD
+1. Джоба: `SETUP Build Container` по ссылке `http://ci.example.com/viewType.html?buildTypeId=Deploy`
 2. Параметры:
 action=Обновлять публичный репозиторий по тегу?
 branch=release #можно также выбрать ветку master
@@ -74,21 +74,21 @@ tag=latest # можно указать любой
 
 ## Сборка контейнера
 Если у вас нет образа локально то сделайте pull (возможно перед этим потребуется выполнить docker login):
-docker pull swr.ru-moscow-1.hc.sbercloud.ru/transport.crr/pgsqlpatchupdater:latest
+docker pull registry.example.com/group/pgsqlpatchupdater:latest
 
 Запустите контейнер с параметрами:
 
 ```bash
-docker run --rm --name pgsqlpatchupdater -e DB_HOST=10.17.1.199 -e DB_NAME=rnis -e DB_PASS=your_password_here -e DB_PORT=5432 -e DB_USER=admin -e VERSION=202 -e SEED=true pgsqlpatchupdater:latest
+docker run --rm --name pgsqlpatchupdater -e DB_HOST=192.168.1.10 -e DB_NAME=app_db -e DB_PASS=your_password_here -e DB_PORT=5432 -e DB_USER=admin -e VERSION=202 -e SEED=true pgsqlpatchupdater:latest
 ```
 
-SEED можно не указывать если не требуется применение seed__adm_system_service_info.sql
+SEED можно не указывать если не требуется применение seed__system_service_info.sql
 
 ## Пример конфигурации
 
 ```text
 .env
-DB_HOST=192.168.100.200
+DB_HOST=192.168.1.10
 DB_PORT=5432
 DB_NAME=db
 DB_USER=admin
@@ -103,6 +103,6 @@ GIT_TOKEN=xxxxxxxxx
 
 | Ошибка | Решение |
 |--------|---------|
-| `patch191.sql не найден` | Проверьте `Transport/versioningDb/` |
+| `patch191.sql не найден` | Проверьте `db-patches/migrations/` |
 | `Connection refused` | Проверьте `DB_HOST:DB_PORT` |
 | `no password supplied` | `.pgpass` права `600` |

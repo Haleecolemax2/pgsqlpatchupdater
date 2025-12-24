@@ -2,7 +2,7 @@
 set -e
 
 DB_PORT=${DB_PORT:-5432}
-PATCH_DIR=Transport/versioningDb
+PATCH_DIR=db-patches/migrations
 
 # .pgpass
 echo "$DB_HOST:$DB_PORT:$DB_NAME:$DB_USER:$DB_PASS" > /.pgpass
@@ -10,7 +10,6 @@ chmod 600 /.pgpass
 export PGPASSFILE=/.pgpass
 
 echo "=== DEBUG ==="
-echo "DB_PASS='$DB_PASS'"
 echo "Содержание PGPASS:"
 cat /.pgpass
 echo "права PGPASS (должны быть 600):"
@@ -18,10 +17,10 @@ ls -la /.pgpass
 echo "=============="
 
 if [[ "$SEED" == "true" ]]; then
-  echo "=== Обнаружен флаг SEED=true, применение seed__adm_system_service_info.sql ==="
+  echo "=== Обнаружен флаг SEED=true, применение seed__system_service_info.sql ==="
   PGPASSFILE=/.pgpass psql -h "$DB_HOST" -p "$DB_PORT" -d "$DB_NAME" -U "$DB_USER" \
-      -v ON_ERROR_STOP=1 -f "Transport/_db/rnis/seed__adm_system_service_info.sql"
-    echo "Seed seed__adm_system_service_info.sql ОК"
+      -v ON_ERROR_STOP=1 -f "db-patches/seeds/seed__system_service_info.sql"
+    echo "Seed seed__system_service_info.sql ОК"
 fi
 
 # Получаем текущий патч из БД
