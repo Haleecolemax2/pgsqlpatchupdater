@@ -1,0 +1,8 @@
+FROM alpine:latest
+RUN apk add --no-cache postgresql-client git bash
+ARG GIT_TOKEN
+ARG BRANCH
+RUN git clone -b $BRANCH --depth 1 http://oauth2:$GIT_TOKEN@10.17.0.86:8100/Transport/Transport.git
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
